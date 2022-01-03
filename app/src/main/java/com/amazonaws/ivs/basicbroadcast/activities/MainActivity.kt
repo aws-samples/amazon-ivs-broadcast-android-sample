@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.R
 import com.amazonaws.ivs.basicbroadcast.adapters.DeviceSpinnerAdapter
@@ -39,6 +40,7 @@ class MainActivity : PermissionActivity() {
     private var optionsVisible = true
     private var permissionsAsked = false
     private var captureStarted = false
+    private var isMuted = false
 
     private var imagePreviewView: ImagePreviewView? = null
 
@@ -197,6 +199,10 @@ class MainActivity : PermissionActivity() {
             optionsVisible = change
         }
 
+        binding.muteButton.setOnClickListener {
+            toggleMute(!isMuted)
+        }
+
         binding.cameraSpinner.apply {
             adapter = cameraAdapter
 
@@ -278,6 +284,17 @@ class MainActivity : PermissionActivity() {
     private fun resetUi() {
         binding.broadcastOptionView.root.hide()
         binding.optionView.root.show()
+        toggleMute()
+    }
+
+    private fun toggleMute(shouldMute: Boolean = false) {
+        if (shouldMute) {
+            binding.muteButton.background = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_volume_off_24)
+        } else {
+            binding.muteButton.background = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_volume_up_24)
+        }
+        viewModel.mute(shouldMute)
+        isMuted = shouldMute
     }
 
     private fun startScreenCapture() {
