@@ -57,7 +57,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             // This slot will hold the camera and start in the bottom left corner of the stream. It will move during the transition.
             cameraSlot = BroadcastConfiguration.Mixer.Slot.with {
                 it.size = smallSize
-                it.aspect = BroadcastConfiguration.AspectMode.FILL
+                it.aspect = BroadcastConfiguration.AspectMode.FIT
                 it.position = smallPositionBottomLeft
                 it.setzIndex(2)
                 it.preferredVideoInput = Device.Descriptor.DeviceType.CAMERA
