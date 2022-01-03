@@ -50,6 +50,7 @@ class MainActivity : PermissionActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "On Create")
         super.onCreate(savedInstanceState)
         App.component.inject(this)
         Bluetooth.startBluetoothSco(applicationContext)
@@ -140,19 +141,21 @@ class MainActivity : PermissionActivity() {
     }
 
     override fun onResume() {
+        Log.d(TAG, "On Resume")
         super.onResume()
         if (permissionsAsked) permissionsAsked = false
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "On Destroy")
         super.onDestroy()
         endSession()
         Bluetooth.stopBluetoothSco(applicationContext)
     }
 
     override fun onPause() {
-        super.onPause()
         Log.d(TAG, "On Pause")
+        super.onPause()
         if (!viewModel.screenCaptureEnabled) {
             Log.d(TAG, "On Pause session ended")
             endSession()

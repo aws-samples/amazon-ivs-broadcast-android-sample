@@ -25,6 +25,7 @@ class MixerActivity : PermissionActivity() {
     private lateinit var binding: ActivityMixerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "On Create")
         super.onCreate(savedInstanceState)
         App.component.inject(this)
         binding = ActivityMixerBinding.inflate(layoutInflater)
@@ -66,18 +67,20 @@ class MixerActivity : PermissionActivity() {
     }
 
     override fun onResume() {
+        Log.d(TAG, "On Resume")
         super.onResume()
         if (permissionsAsked) permissionsAsked = false
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "On Destroy")
         super.onDestroy()
         endSession()
     }
 
     override fun onPause() {
-        super.onPause()
         Log.d(TAG, "On Pause")
+        super.onPause()
         endSession()
     }
 
