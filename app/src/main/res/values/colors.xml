@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#202020</color>
     <color name="colorAccent">#56B4FF</color>
 
+    <color name="colorBackground">#303030</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorWhiteTransparent">#99FFFFFF</color>
     <color name="colorBlack">#000000</color>

@@ -33,6 +33,7 @@ class MainViewModel(private val context: Application) : ViewModel() {
     private var microphoneDevice: Device.Descriptor? = null
     private var attachedCameraSize: Int = 0
     private var attachedMicrophoneSize: Int = 0
+    private var isMuted: Boolean = false
 
     var session: BroadcastSession? = null
     var paused = false
@@ -164,6 +165,13 @@ class MainViewModel(private val context: Application) : ViewModel() {
                             }
                             if (it.descriptor.type == DeviceType.MICROPHONE) {
                                 microphoneDevice = it.descriptor
+                                // By default, audio devices start with a gain of 1, so we only
+                                // need to change the gain on starting the session if we already know
+                                // the device should be muted.
+                                if (isMuted) {
+                                    it as AudioDevice
+                                    it.setGain(0f)
+                                }
                             }
                         }
                     }
@@ -252,6 +260,10 @@ class MainViewModel(private val context: Application) : ViewModel() {
                         session?.exchangeDevices(it, device) { microphone ->
                             Log.d(TAG, "Device attached ${microphone.descriptor.deviceId}")
                             microphoneDevice = microphone.descriptor
+                            if (isMuted) {
+                                microphone as AudioDevice
+                                microphone.setGain(0f)
+                            }
                         }
                     } catch (e: BroadcastException) {
                         Log.d(TAG, "Microphone exchange exception $e")
@@ -266,6 +278,52 @@ class MainViewModel(private val context: Application) : ViewModel() {
 
             if (session == null) microphoneDevice = device
         }
+    }
+
+    /**
+     * Mute attached microphones, if any.
+     */
+    fun mute(shouldMute: Boolean) {
+        // It is important to note that when muting a microphone by adjusting the gain, the microphone will still be recording.
+        // Some devices may show a physical indicator light while the microphone is active.
+        // The SDK is still receiving all the real audio samples, it is just applying a gain of 0 to them. To turn off microphone
+        // recording, you need to detach the microphone completely from the broadcast session, not just mute it.
+
+        val muteAll = true // toggle to change the mute strategy. Both are functionally equivalent in this sample app
+
+        val gain = if (shouldMute) 0f else 1f
+        session?.let {
+            // Wait for any ongoing device changes to complete (e.g. if the microphone selection
+            // has recently changed).
+            it.awaitDeviceChanges {
+                // Get the list of all devices currently attached to the broadcast session.
+                // Note that new audio devices start with a default gain of 1, so you would need to
+                // set the gain to 0 on any newly-added audio devices in the future.
+                val devices = it.listAttachedDevices()
+
+
+                devices.forEach { device ->
+                    if (muteAll) {
+                        // For each attached device, check if it's an audio source. Here we are checking
+                        // if the stream type is PCM, but you could also check if the DeviceType was MICROPHONE,
+                        // USER_AUDIO, or SYSTEM_AUDIO.
+                        if (device.descriptor.hasStream(Device.Descriptor.StreamType.PCM)) {
+                            // Set each AudioDevice's gain.
+                            device as AudioDevice
+                            device.setGain(gain)
+                        }
+                    } else {
+                        // We only want to mute a single device. Check if this device's descriptor
+                        // matches the one we would like to mute.
+                        if (device.descriptor == microphoneDevice) {
+                            device as AudioDevice
+                            device.setGain(gain)
+                        }
+                    }
+                }
+            }
+        }
+        isMuted = shouldMute
     }
 
     /**
@@ -306,6 +364,10 @@ class MainViewModel(private val context: Application) : ViewModel() {
                     session?.attachDevice(device) {
                         session?.mixer?.bind(it, SLOT_CAMERA_NAME)
                         microphoneDevice = it.descriptor
+                        if (isMuted) {
+                            it as AudioDevice
+                            it.setGain(0f)
+                        }
                     }
                 }
             } else {

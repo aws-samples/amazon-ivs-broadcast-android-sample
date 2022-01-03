@@ -74,15 +74,40 @@
                 android:spinnerMode="dropdown"
                 tools:listitem="@layout/spinner_item" />
 
-            <Spinner
-                android:id="@+id/microphone_spinner"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/microphone_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:padding="6dp"
-                android:spinnerMode="dropdown"
-                tools:listitem="@layout/spinner_item" />
+                android:background="@color/colorDark"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <Spinner
+                    android:id="@+id/microphone_spinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/mute_button"
+                    android:background="@null"
+                    android:padding="6dp"
+                    android:spinnerMode="dropdown"
+                    tools:listitem="@layout/spinner_item" />
+
+                <Button
+                    android:id="@+id/mute_button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_baseline_volume_up_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="end|center"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/version"

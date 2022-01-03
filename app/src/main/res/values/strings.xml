@@ -3,15 +3,20 @@
 
     <string name="error_attach_device">Couldn"'"t attach device. Session not ready.</string>
     <string name="error_create_session">Couldn"'"t create broadcast session. Try again.</string>
+    <string name="error_failed_to_bind_to_slot">Couldn"'"t bind to slot.</string>
     <string name="error_happened_template">Error happened (Code - %1$s)</string>
     <string name="error_some_fields_are_empty">One or more fields are empty</string>
 
     <string name="hint_stream_key">enter stream key</string>
     <string name="hint_url_endpoint">enter endpoint</string>
+
+    <string name="txt_camera_device_template">Camera %1$s (%2$s)</string>
     <string name="txt_dialog_ok">OK</string>
     <string name="txt_end_session">End session</string>
+    <string name="txt_menu_broadcast">Live broadcast</string>
+    <string name="txt_menu_mixer_and_transitions">Mixer and transitions</string>
+    <string name="txt_microphone_device_template">Microphone %1$s (%2$s)</string>
     <string name="txt_start">Start</string>
     <string name="txt_screen">Screen</string>
-    <string name="txt_microphone_device_template">Microphone %1$s (%2$s)</string>
-    <string name="txt_camera_device_template">Camera %1$s (%2$s)</string>
+
 </resources>
