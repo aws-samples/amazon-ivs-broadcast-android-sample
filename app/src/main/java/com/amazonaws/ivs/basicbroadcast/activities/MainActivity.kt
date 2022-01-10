@@ -258,7 +258,7 @@ class MainActivity : PermissionActivity() {
     }
 
     private fun startSession(endpoint: String, key: String) {
-        Log.d(TAG, "Starting session: $endpoint, $key")
+        Log.d(TAG, "Starting session")
         viewModel.session?.start(endpoint, key)
     }
 
