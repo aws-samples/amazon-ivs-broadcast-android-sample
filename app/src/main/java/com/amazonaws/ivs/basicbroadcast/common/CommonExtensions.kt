@@ -2,11 +2,15 @@ package com.amazonaws.ivs.basicbroadcast.common
 
 import android.app.Activity
 import android.app.Dialog
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
 import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.basicbroadcast.R
@@ -59,6 +63,16 @@ fun Spinner.onSelectionChanged(callback: (Int) -> Unit) {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             callback(position)
         }
+    }
+}
+
+fun Button.toggleVisibility(keyField: EditText, keyHidden: Boolean) {
+    if (keyHidden) {
+        keyField.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        this.background = ContextCompat.getDrawable(context, R.drawable.ic_outline_eye)
+    } else {
+        keyField.transformationMethod = PasswordTransformationMethod.getInstance()
+        this.background = ContextCompat.getDrawable(context, R.drawable.ic_baseline_eye)
     }
 }
 

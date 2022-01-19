@@ -8,7 +8,10 @@ import android.graphics.PorterDuffColorFilter
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.basicbroadcast.App
@@ -41,6 +44,7 @@ class MainActivity : PermissionActivity() {
     private var permissionsAsked = false
     private var captureStarted = false
     private var isMuted = false
+    private var isKeyHidden = true
 
     private var imagePreviewView: ImagePreviewView? = null
 
@@ -193,6 +197,12 @@ class MainActivity : PermissionActivity() {
             } else {
                 Toast.makeText(this, getString(R.string.error_some_fields_are_empty), Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.optionView.btnShowhideKey.setOnClickListener {
+            it as Button
+            it.toggleVisibility(binding.optionView.edtStream, isKeyHidden)
+            isKeyHidden = !isKeyHidden
         }
 
         binding.mainRoot.setOnClickListener {
