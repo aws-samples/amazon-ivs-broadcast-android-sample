@@ -31,12 +31,22 @@
         android:backgroundTint="@color/colorWhite"
         android:hint="@string/hint_stream_key"
         android:imeOptions="actionDone"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:textColor="@color/colorWhite"
         android:textColorHint="@color/colorWhiteTransparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/btn_start"
+        app:layout_constraintEnd_toStartOf="@+id/btn_showhide_key"
+        app:layout_constraintStart_toStartOf="@+id/edt_endpoint"
         app:layout_constraintTop_toBottomOf="@+id/edt_endpoint" />
+
+    <Button
+        android:id="@+id/btn_showhide_key"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_margin="13dp"
+        android:background="@drawable/ic_baseline_eye"
+        app:layout_constraintStart_toEndOf="@+id/edt_stream"
+        app:layout_constraintTop_toBottomOf="@id/edt_endpoint"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/btn_start"
