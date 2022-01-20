@@ -20,18 +20,18 @@ class MixerViewModel(private val context: Application) : ViewModel() {
     var session: BroadcastSession? = null
     var player: MediaPlayer? = null
 
+    val CAMERA_SLOT_NAME: String = "camera"
+    val CONTENT_SLOT_NAME: String = "content"
+    val LOGO_SLOT_NAME: String = "logo"
+
     var cameraIsSmall: Boolean = true
+
     var cameraSlot: BroadcastConfiguration.Mixer.Slot? = null
     var contentSlot: BroadcastConfiguration.Mixer.Slot? = null
     var logoSlot: BroadcastConfiguration.Mixer.Slot? = null
 
-    // Live data
     val preview = MutableLiveData<ImagePreviewView>()
     val clearPreview = MutableLiveData<Boolean>()
-
-    val CAMERA_SLOT_NAME: String = "camera"
-    val CONTENT_SLOT_NAME: String = "content"
-    val LOGO_SLOT_NAME: String = "logo"
 
     private companion object MixerGuide {
         val borderWidth: Float = 10f
@@ -140,13 +140,13 @@ class MixerViewModel(private val context: Application) : ViewModel() {
                 }
             }
 
-            // Third, create a custom image input source for the looping content.
+            // Third, create a custom image input source for the mp4 content.
             val contentSurfaceSource = this.createImageInputSource()
             val contentSurface = contentSurfaceSource.inputSurface
             player = MediaPlayer().apply {
                 this.setDataSource(context, content)
                 this.prepare()
-                this.setDisplay(CustomSurfaceHolder(contentSurface))
+                this.setDisplay(CustomImageSourceSurfaceHolder(contentSurface))
                 this.setOnPreparedListener {
                     this.start()
                     this.isLooping = true

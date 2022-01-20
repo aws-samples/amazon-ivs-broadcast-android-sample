@@ -21,5 +21,9 @@ class MenuActivity : AppCompatActivity() {
         binding.menuMixerAndTransitions.setOnClickListener {
             startActivity(Intent(this, MixerActivity::class.java))
         }
+
+        binding.menuCustomMediaSources.setOnClickListener {
+            startActivity(Intent(this, CustomSourceActivity::class.java))
+        }
     }
 }

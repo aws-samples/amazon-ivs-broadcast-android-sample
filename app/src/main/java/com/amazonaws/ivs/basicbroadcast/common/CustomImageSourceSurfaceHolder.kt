@@ -6,11 +6,12 @@ import android.view.Surface
 import android.view.SurfaceHolder
 
 /**
- * This class is a simple wrapper for the custom image source's Surface provided by the
- * broadcast session when calling createCustomImageSource(). This allows us to provide the Surface
- * to other Android objects that require a SurfaceHolder, such as the MediaPlayer.
+ * This class is a simple wrapper for the Surface provided by BroadcastSession.createCustomImageSource().
+ * This makes it easier to pass the custom Surface to other classes that expect a SurfaceHolder
+ * instead of a Surface, e.g. MediaPlayer.
+ *
  */
-class CustomSurfaceHolder(surface: Surface) : SurfaceHolder {
+class CustomImageSourceSurfaceHolder(surface: Surface) : SurfaceHolder {
     private var surface: Surface = surface
 
     override fun addCallback(callback: SurfaceHolder.Callback?) {
@@ -22,6 +23,7 @@ class CustomSurfaceHolder(surface: Surface) : SurfaceHolder {
     }
 
     override fun isCreating(): Boolean {
+        // Surface is already created when CustomSurfaceHolder is constructed
         return false
     }
 

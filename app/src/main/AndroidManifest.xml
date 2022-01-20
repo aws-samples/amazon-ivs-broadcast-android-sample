@@ -28,6 +28,9 @@
         <activity android:name=".activities.MixerActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity android:name=".activities.CustomSourceActivity"
+            android:configChanges="orientation|screenSize"/>
+
         <service
             android:name=".activities.services.BroadcastSystemCaptureService"
             android:foregroundServiceType="camera|microphone|mediaProjection" />

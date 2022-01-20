@@ -14,6 +14,7 @@
     <string name="txt_dialog_ok">OK</string>
     <string name="txt_end_session">End session</string>
     <string name="txt_menu_broadcast">Live broadcast</string>
+    <string name="txt_menu_custom_media_sources">Custom media sources</string>
     <string name="txt_menu_mixer_and_transitions">Mixer and transitions</string>
     <string name="txt_microphone_device_template">Microphone %1$s (%2$s)</string>
     <string name="txt_start">Start</string>
