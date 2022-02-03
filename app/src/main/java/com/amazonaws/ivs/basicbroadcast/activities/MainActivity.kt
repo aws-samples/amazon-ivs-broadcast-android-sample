@@ -147,14 +147,23 @@ class MainActivity : PermissionActivity() {
     override fun onResume() {
         Log.d(TAG, "On Resume")
         super.onResume()
-        if (permissionsAsked) permissionsAsked = false
+        permissionsAsked = false
     }
 
     override fun onDestroy() {
         Log.d(TAG, "On Destroy")
-        super.onDestroy()
         endSession()
         Bluetooth.stopBluetoothSco(applicationContext)
+        super.onDestroy()
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "On Stop")
+        if (!viewModel.screenCaptureEnabled) {
+            Log.d(TAG, "On Stop session ended")
+            endSession()
+        }
+        super.onStop()
     }
 
     override fun onPause() {
@@ -269,7 +278,7 @@ class MainActivity : PermissionActivity() {
 
     private fun startSession(endpoint: String, key: String) {
         Log.d(TAG, "Starting session")
-        viewModel.session?.start(endpoint, key)
+        viewModel.startSession(endpoint, key)
     }
 
     private fun createSessionAndStart(endpoint: String, key: String) {

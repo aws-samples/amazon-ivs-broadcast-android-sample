@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 
 private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 private val mainScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-private const val TAG = "AmazonIVS"
+const val TAG = "AmazonIVS"
 
 fun launchIO(block: suspend CoroutineScope.() -> Unit) = ioScope.launch(
     context = CoroutineExceptionHandler { _, e -> Log.d(TAG, "Coroutine failed ${e.localizedMessage}") },

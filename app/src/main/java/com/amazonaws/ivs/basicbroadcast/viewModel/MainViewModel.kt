@@ -188,6 +188,18 @@ class MainViewModel(private val context: Application) : ViewModel() {
         }
     }
 
+    fun startSession(endpoint: String, key: String) {
+        try {
+            session?.start(endpoint, key)
+        } catch (e: BroadcastException) {
+            e.printStackTrace()
+            launchMain {
+                errorHappened.value = Pair(e.code.toString(), e.detail)
+                disconnectHappened.value = true
+            }
+        }
+    }
+
     /**
      * Updates device data in camera/microphone spinners onDeviceAdded/onDeviceRemoved
      */

@@ -74,14 +74,14 @@ class MixerActivity : PermissionActivity() {
 
     override fun onDestroy() {
         Log.d(TAG, "On Destroy")
-        super.onDestroy()
         endSession()
+        super.onDestroy()
     }
 
-    override fun onPause() {
-        Log.d(TAG, "On Pause")
-        super.onPause()
+    override fun onStop() {
+        Log.d(TAG, "On Stop")
         endSession()
+        super.onStop()
     }
 
     private fun endSession() {
