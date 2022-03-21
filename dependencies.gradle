@@ -13,7 +13,7 @@ def coroutines_version = '1.4.3'
 dependencies {
 
     // Library
-    implementation 'com.amazonaws:ivs-broadcast:1.3.0'
+    implementation "com.amazonaws:ivs-broadcast:$broadcast_version"
 
     // Material design
     implementation "com.google.android.material:material:$materialDesignVersion"
