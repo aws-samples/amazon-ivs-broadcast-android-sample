@@ -159,9 +159,7 @@ class MainViewModel(private val context: Application) : ViewModel() {
                         device?.let {
                             if (it.descriptor.type == DeviceType.CAMERA) {
                                 cameraDevice = it.descriptor
-                                if (!screenCaptureEnabled) {
-                                    displayCameraOutput(it)
-                                }
+                                displayCameraOutput(it)
                             }
                             if (it.descriptor.type == DeviceType.MICROPHONE) {
                                 microphoneDevice = it.descriptor
@@ -238,10 +236,8 @@ class MainViewModel(private val context: Application) : ViewModel() {
                     clearPreview.value = true
                     try {
                         session?.exchangeDevices(it, device) { camera ->
-                            if (!screenCaptureEnabled) {
-                                displayCameraOutput(camera)
-                                cameraDevice = camera.descriptor
-                            }
+                            displayCameraOutput(camera)
+                            cameraDevice = camera.descriptor
                         }
                     } catch (e: BroadcastException) {
                         Log.d(TAG, "Camera exchange exception $e")
