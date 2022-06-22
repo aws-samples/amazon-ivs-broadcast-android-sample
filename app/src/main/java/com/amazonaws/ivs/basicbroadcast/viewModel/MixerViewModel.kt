@@ -53,6 +53,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
         val config = BroadcastConfiguration().apply {
             this.video.size = bigSize
             this.video.targetFramerate = 60
+            this.video.enableTransparency(true)
 
             // This slot will hold the camera and start in the bottom left corner of the stream. It will move during the transition.
             cameraSlot = BroadcastConfiguration.Mixer.Slot.with {
