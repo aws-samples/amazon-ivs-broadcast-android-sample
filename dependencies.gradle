@@ -1,14 +1,14 @@
-def appCompatVersion = '1.3.0'
-def coreVersion = '1.5.0'
-def constraintLayoutVersion = '2.0.4'
-def materialDesignVersion = '1.3.0'
-def recyclerViewVersion = '1.2.0'
-def roomVersion = '2.3.0'
-def lifecycleVersion = '2.3.1'
-def daggerVersion = '2.32'
-def jsonVersion = '1.0.0-RC'
-def camera2_version = "1.0.1"
-def coroutines_version = '1.4.3'
+def appCompatVersion = '1.5.1'
+def coreVersion = '1.9.0'
+def constraintLayoutVersion = '2.1.4'
+def materialDesignVersion = '1.6.1'
+def recyclerViewVersion = '1.2.1'
+def roomVersion = '2.4.3'
+def lifecycleVersion = '2.5.1'
+def daggerVersion = '2.43.2'
+def jsonVersion = '1.4.0'
+def camera2_version = "1.1.0"
+def coroutines_version = '1.6.4'
 
 dependencies {
 

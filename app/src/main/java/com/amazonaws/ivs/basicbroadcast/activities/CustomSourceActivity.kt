@@ -57,25 +57,26 @@ class CustomSourceActivity : PermissionActivity() {
             imagePreviewView = it
         }
 
-        viewModel.clearPreview.observe(this, { clear ->
+        viewModel.clearPreview.observe(this) { clear ->
             Log.d(TAG, "Texture view cleared")
             if (clear) binding.previewView.removeAllViews()
-        })
+        }
 
-        viewModel.indicatorColor.observe(this, { color ->
+        viewModel.indicatorColor.observe(this) { color ->
             Log.d(TAG, "Indicator color changed")
-            binding.broadcastOptionView.statusIndicator.background.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
-        })
+            binding.broadcastOptionView.statusIndicator.background.colorFilter =
+                PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+        }
 
-        viewModel.errorHappened.observe(this, { error ->
+        viewModel.errorHappened.observe(this) { error ->
             Log.d(TAG, "Error dialog is shown: ${error.first}, ${error.second}")
             showDialog(error.first, error.second)
-        })
+        }
 
-        viewModel.disconnectHappened.observe(this, {
+        viewModel.disconnectHappened.observe(this) {
             Log.d(TAG, "Disconnect happened")
             endSession()
-        })
+        }
 
         initUi()
     }
