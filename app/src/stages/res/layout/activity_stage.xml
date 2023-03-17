@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="joined"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        tools:context=".StageActivity">
+
+        <GridLayout
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBlack"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/button_view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            app:layout_constraintBottom_toTopOf="@+id/option_root"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <ToggleButton
+                android:id="@+id/btn_audio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorTransparent"
+                android:checked="true"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textOff="@string/txt_microphone_off"
+                android:textOn="@string/txt_microphone_on"
+                android:visibility="@{joined ? View.VISIBLE : View.INVISIBLE}" />
+
+            <ToggleButton
+                android:id="@+id/btn_camera"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorTransparent"
+                android:checked="true"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textOff="@string/txt_camera_off"
+                android:textOn="@string/txt_camera_on"
+                android:visibility="@{joined ? View.VISIBLE : View.INVISIBLE}" />
+
+            <TextView
+                android:id="@+id/btn_leave"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/txt_leave"
+                android:textColor="@color/colorRed"
+                android:visibility="@{joined ? View.VISIBLE : View.INVISIBLE}" />
+
+            <TextView
+                android:id="@+id/btn_broadcast"
+                style="@style/TextViewStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/txt_broadcast" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/stage_broadcast_options"
+            layout="@layout/stage_broadcast_option_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <FrameLayout
+            android:id="@+id/option_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{joined ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/stage_option_view"
+                layout="@layout/stage_option_view"
+                android:visibility="visible" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

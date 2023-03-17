@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Stage Demo</string>
+
+    <string name="txt_join">Join</string>
+    <string name="txt_broadcast">Broadcast</string>
+    <string name="txt_session_clear">Session</string>
+    <string name="txt_stop">Stop</string>
+    <string name="txt_leave">Leave</string>
+    <string name="txt_muted">Muted</string>
+    <string name="txt_camera_on">Camera: On</string>
+    <string name="txt_camera_off">Camera: Off</string>
+    <string name="txt_microphone_on">Mic: On</string>
+    <string name="txt_microphone_off">Mic: Off</string>
+    <string name="txt_camera_muted">Camera Off</string>
+    <string name="hint_token">enter token</string>
+    <string name="hint_stream_key">enter stream key</string>
+    <string name="hint_url_endpoint">enter endpoint</string>
+    <string name="connected_participants">Connected participants</string>
+    <string name="error_some_fields_are_empty">One or more fields are empty</string>
+    <string name="error_start_session">Couldn"'"t start broadcast session. Try again.</string>
+
+</resources>
