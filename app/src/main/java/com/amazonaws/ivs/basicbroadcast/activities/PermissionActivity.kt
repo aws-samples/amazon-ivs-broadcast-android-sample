@@ -40,6 +40,16 @@ open class PermissionActivity : AppCompatActivity() {
         }
     }
 
+    fun initWithPermissions(callback: () -> Unit) {
+        if (!arePermissionsGranted()) {
+            askForPermissions { success ->
+                if (success) callback.invoke()
+            }
+        } else {
+            callback.invoke()
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionRequestHistory[requestCode]?.run {

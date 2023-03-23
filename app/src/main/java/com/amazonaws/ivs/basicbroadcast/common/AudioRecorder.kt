@@ -131,6 +131,10 @@ class AudioRecorder(val context: Context) {
                     launchMain {
                         device?.let { device ->
 
+                            if (!isRecording) {
+                                return@launchMain
+                            }
+
                             // Error check.
                             if (device.appendBuffer(buffer, bytesRead.toLong(), pts.toLong()) < 0) {
                                 Log.e("AmazonIVS", "Error appending to audio device buffer")

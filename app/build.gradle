@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
-apply from: '../dependencies.gradle'
+
 
 android {
     compileSdkVersion 33
@@ -17,6 +17,18 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions 'flavor'
+    productFlavors {
+        core {
+            dimension 'flavor'
+        }
+
+        stages {
+            dimension 'flavor'
+            applicationIdSuffix = ".stages"
+        }
     }
 
     buildTypes {
@@ -44,3 +56,5 @@ android {
         jvmTarget = '1.8'
     }
 }
+
+apply from: '../dependencies.gradle'
