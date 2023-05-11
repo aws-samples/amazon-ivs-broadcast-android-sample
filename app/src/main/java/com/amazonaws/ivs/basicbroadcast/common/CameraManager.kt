@@ -167,7 +167,6 @@ class CameraManager(private val context: Context) {
 
                 // We're adding a sepia filter to the camera.
                 // See other simple color filters here: https://developer.android.com/reference/android/hardware/camera2/CaptureRequest.html?hl=ru#CONTROL_EFFECT_MODE
-                // For more complex filters (e.g. beauty filters), Android 31 introduced CameraExtensionCharacteristics: https://developer.android.com/reference/android/hardware/camera2/CameraExtensionCharacteristics
                 // Alternatively, it may be necessary to use an external library that provides a beauty filter with the Camera2 API.
                 this.set(
                     CaptureRequest.CONTROL_EFFECT_MODE,
