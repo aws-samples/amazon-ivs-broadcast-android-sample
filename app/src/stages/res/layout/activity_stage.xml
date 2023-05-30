@@ -18,12 +18,11 @@
         android:keepScreenOn="true"
         tools:context=".StageActivity">
 
-        <GridLayout
-            android:id="@+id/preview_view"
+        <com.amazonaws.ivs.basicbroadcast.views.ParticipantListLayout
+            android:id="@+id/participant_list_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorBlack"
-            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
