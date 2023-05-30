@@ -131,30 +131,27 @@ class StageActivity : PermissionActivity() {
     private fun observeData() {
         viewModel.viewToAdd.observe(this) { view ->
             if (viewModel.participantViewMap.containsValue(view)) {
-                with(binding.previewView) {
+                with(binding.participantListLayout) {
                     if (contains(view)) removeView(view)
                     addView(view)
-                    updateLayout()
                 }
             }
         }
 
         viewModel.viewToRemove.observe(this) { view ->
-            with(binding.previewView) {
+            with(binding.participantListLayout) {
                 if (contains(view)) {
                     removeView(view)
-                    updateLayout()
                 }
             }
         }
 
         viewModel.localViewToAdd.observe(this) { view ->
             if (viewModel.participantViewMap.containsValue(view)) {
-                with(binding.previewView) {
+                with(binding.participantListLayout) {
                     if (isNotEmpty()) removeViewAt(0)
                     addView(view, 0)
                 }
-                updateLayout()
             }
         }
 
@@ -164,7 +161,7 @@ class StageActivity : PermissionActivity() {
 
         viewModel.removeAllParticipants.observe(this) { remove ->
             if (remove) {
-                with(binding.previewView) {
+                with(binding.participantListLayout) {
                     if (childCount != 0) removeViews(1, childCount - 1)
                 }
             }
@@ -178,9 +175,8 @@ class StageActivity : PermissionActivity() {
 
         viewModel.removeAllViews.observe(this) { remove ->
             if (remove) {
-                with(binding.previewView) {
+                with(binding.participantListLayout) {
                     removeAllViews()
-                    invalidate()
                 }
             }
         }
@@ -232,10 +228,7 @@ class StageActivity : PermissionActivity() {
     }
 
     private fun clearPreview() {
-        with(binding.previewView) {
-            removeAllViews()
-            invalidate()
-        }
+        binding.participantListLayout.removeAllViews()
     }
 
     /**
@@ -284,13 +277,6 @@ class StageActivity : PermissionActivity() {
                 Toast.makeText(this@StageActivity, getString(R.string.error_start_session), Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    /**
-     * Update participant previews in GridLayout
-     */
-    private fun updateLayout() {
-        with(viewModel) { binding.previewView.updateLayout(participantIds, participantViewMap) }
     }
 
 }
