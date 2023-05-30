@@ -1,4 +1,4 @@
-package com.amazonaws.ivs.basicbroadcast
+package com.amazonaws.ivs.basicbroadcast.viewModel
 
 import android.app.Application
 import android.os.Build
@@ -40,11 +40,11 @@ class StageViewModel(private val context: Application) : ViewModel() {
     val participantViewMap = HashMap<String, ParticipantView>()
 
     // LiveData
-    val viewToAdd = MutableLiveData<ParticipantView>()
-    val viewToRemove = MutableLiveData<ParticipantView>()
-    val localViewToAdd = MutableLiveData<ParticipantView>()
-    val removeAllViews = MutableLiveData<Boolean>()
-    val removeAllParticipants = MutableLiveData<Boolean>()
+    val viewToAdd = NoLossEvent<ParticipantView>()
+    val viewToRemove = NoLossEvent<ParticipantView>()
+    val localViewToAdd = NoLossEvent<ParticipantView>()
+    val removeAllViews = NoLossEvent<Boolean>()
+    val removeAllParticipants = NoLossEvent<Boolean>()
     val joinHappened = MutableLiveData<Boolean>()
     var broadcastHappened = MutableLiveData<Boolean>()
 
@@ -411,12 +411,12 @@ class StageViewModel(private val context: Application) : ViewModel() {
 
     private fun addParticipantWithPreview(participantId: String, preview: ImagePreviewView) {
         with(participantIds) {
-            if (contains(participantId)) participantViewMap.remove(participantId)?.let { viewToRemove.postValue(it) }
+            if (contains(participantId)) participantViewMap.remove(participantId)?.let { viewToRemove.setValue(it) }
             else add(participantId)
         }
         with(getParticipantView(participantId)) {
             participantViewMap[participantId] = this
-            viewToAdd.value = this
+            viewToAdd.setValue(this)
             setPreview(preview)
         }
         updateSlotLayout()
@@ -427,7 +427,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
         with(participantIds) { if (!contains(CAMERA_SLOT_NAME)) add(CAMERA_SLOT_NAME) }
         with(getParticipantView(CAMERA_SLOT_NAME)) {
             participantViewMap[CAMERA_SLOT_NAME] = this
-            localViewToAdd.value = this
+            localViewToAdd.setValue(this)
             setPreview(preview)
         }
         updateSlotLayout()
@@ -438,7 +438,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
         participantIds.remove(participantId)
         participantViewMap.remove(participantId)?.let {
             Log.d(TAG, "Participant $participantId camera feed is removed")
-            viewToRemove.value = it
+            viewToRemove.setValue(it)
         }
         updateSlotLayout()
     }
@@ -526,7 +526,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
      * Clear stored connected participant data
      */
     private fun clearData() {
-        removeAllParticipants.value = true
+        removeAllParticipants.setValue(true)
         participantIds.removeAll { it != CAMERA_SLOT_NAME }
         participantViewMap[CAMERA_SLOT_NAME]?.setLabel("")
         with(participantViewMap) {
@@ -629,7 +629,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
     }
 
     fun leaveStage() {
-        removeAllParticipants.postValue(true)
+        removeAllParticipants.setValue(true)
         participantViewMap[CAMERA_SLOT_NAME]?.setLabel("")
         if (joined) {
             stage?.leave()
@@ -661,7 +661,14 @@ class StageViewModel(private val context: Application) : ViewModel() {
     fun release() {
         if (joined) leaveStage()
         if (broadcasting) stopBroadcast()
+
         releaseSession()
+
+        viewToAdd.clearObserver()
+        viewToRemove.clearObserver()
+        localViewToAdd.clearObserver()
+        removeAllViews.clearObserver()
+        removeAllParticipants.clearObserver()
     }
 
     fun enterBackground() {

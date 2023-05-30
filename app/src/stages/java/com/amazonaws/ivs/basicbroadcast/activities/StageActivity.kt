@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.contains
 import androidx.core.view.isNotEmpty
 import com.amazonaws.ivs.basicbroadcast.App
-import com.amazonaws.ivs.basicbroadcast.StageViewModel
+import com.amazonaws.ivs.basicbroadcast.viewModel.StageViewModel
 import com.amazonaws.ivs.broadcast.BroadcastException
 import com.amazonaws.ivs.broadcast.BroadcastSession
 import com.amazonaws.ivs.basicbroadcast.common.*
@@ -129,7 +129,7 @@ class StageActivity : PermissionActivity() {
      * LiveData observers
      */
     private fun observeData() {
-        viewModel.viewToAdd.observe(this) { view ->
+        viewModel.viewToAdd.observe { view ->
             if (viewModel.participantViewMap.containsValue(view)) {
                 with(binding.participantListLayout) {
                     if (contains(view)) removeView(view)
@@ -138,7 +138,7 @@ class StageActivity : PermissionActivity() {
             }
         }
 
-        viewModel.viewToRemove.observe(this) { view ->
+        viewModel.viewToRemove.observe { view ->
             with(binding.participantListLayout) {
                 if (contains(view)) {
                     removeView(view)
@@ -146,7 +146,7 @@ class StageActivity : PermissionActivity() {
             }
         }
 
-        viewModel.localViewToAdd.observe(this) { view ->
+        viewModel.localViewToAdd.observe { view ->
             if (viewModel.participantViewMap.containsValue(view)) {
                 with(binding.participantListLayout) {
                     if (isNotEmpty()) removeViewAt(0)
@@ -159,7 +159,7 @@ class StageActivity : PermissionActivity() {
             binding.joined = joinedSession
         }
 
-        viewModel.removeAllParticipants.observe(this) { remove ->
+        viewModel.removeAllParticipants.observe { remove ->
             if (remove) {
                 with(binding.participantListLayout) {
                     if (childCount != 0) removeViews(1, childCount - 1)
@@ -173,7 +173,7 @@ class StageActivity : PermissionActivity() {
             binding.btnBroadcast.setBroadcastingTextColor(broadcasting)
         }
 
-        viewModel.removeAllViews.observe(this) { remove ->
+        viewModel.removeAllViews.observe { remove ->
             if (remove) {
                 with(binding.participantListLayout) {
                     removeAllViews()

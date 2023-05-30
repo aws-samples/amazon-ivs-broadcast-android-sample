@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.amazonaws.ivs.broadcast.ImagePreviewView
-import com.amazonaws.ivs.basicbroadcast.StageViewModel.Companion.CAMERA_SLOT_NAME
 import com.amazonaws.ivs.basicbroadcast.databinding.StageParticipantViewBinding
+import com.amazonaws.ivs.basicbroadcast.viewModel.StageViewModel
 
 @SuppressLint("ViewConstructor")
 class ParticipantView(context: Context, participantId: String) : FrameLayout(context) {
@@ -16,7 +16,7 @@ class ParticipantView(context: Context, participantId: String) : FrameLayout(con
     private var preview: ImagePreviewView? = null
 
     init {
-        if (participantId != CAMERA_SLOT_NAME) setLabel(participantId)
+        if (participantId != StageViewModel.CAMERA_SLOT_NAME) setLabel(participantId)
     }
 
     fun setPreview(view: ImagePreviewView?) {
