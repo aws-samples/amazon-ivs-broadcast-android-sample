@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.amazonaws.ivs.realtime.basicrealtime'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.amazonaws.ivs.realtime.basicrealtime"
+        minSdk 29
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    dataBinding.enabled true
+}
+
+dependencies {
+    implementation 'com.amazonaws:ivs-broadcast:1.10.0:stages@aar'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    def lifecycle_version = "2.6.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+}

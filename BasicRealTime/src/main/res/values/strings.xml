@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BasicRealTime</string>
+    <string name="join">Join</string>
+    <string name="leave">Leave</string>
+    <string name="token">Participant Token</string>
+    <string name="publish">Publish</string>
+    <string name="state">State: %1$s</string>
+</resources>
