@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.amazonaws:ivs-broadcast:1.11.0:stages@aar'
+    implementation 'com.amazonaws:ivs-broadcast:1.12.0:stages@aar'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation 'androidx.appcompat:appcompat:1.6.1'
