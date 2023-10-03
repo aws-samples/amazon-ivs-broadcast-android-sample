@@ -174,10 +174,10 @@ class CameraManager(private val context: Context) {
                 )
 
                 // Set the target to the custom surface provided by the broadcast session.
-                this.addTarget(surface!!.inputSurface)
+                this.addTarget(surface!!.inputSurface!!)
             }
 
-            it.createCaptureSession(listOf(surface!!.inputSurface), sessionStateCallback, null)
+            it.createCaptureSession(listOf(surface!!.inputSurface!!), sessionStateCallback, null)
 
         }
     }

@@ -69,8 +69,26 @@ class StageViewModel(private val context: Application) : ViewModel() {
             Log.i(TAG, "onMutedChanged: Id - $id Type - $streamType muted - $isMuted")
         }
 
-        override fun onRTCStats(statsMap: MutableMap<String, MutableMap<String, String>>?) {
+        override fun onRTCStats(statsMap: MutableMap<String, MutableMap<String, String>>) {
             Log.i(TAG, "onRTCStats: Id - $id Type - $streamType stats - $statsMap")
+        }
+
+        override fun onLocalAudioStats(stats: LocalAudioStats) {
+            Log.i(TAG, "LocalAudioStats: networkQuality=${stats.networkQuality}")
+        }
+
+        override fun onLocalVideoStats(stats: MutableList<LocalVideoStats>) {
+            stats.forEach { stat ->
+                Log.i(TAG, "LocalVideoStats: networkQuality=${stat.networkQuality}")
+            }
+        }
+
+        override fun onRemoteAudioStats(stats: RemoteAudioStats) {
+            Log.i(TAG, "RemoteAudioStats: networkQuality=${stats.networkQuality}")
+        }
+
+        override fun onRemoteVideoStats(stats: RemoteVideoStats) {
+            Log.i(TAG, "RemoteVideoStats: networkQuality=${stats.networkQuality}")
         }
     }
 
