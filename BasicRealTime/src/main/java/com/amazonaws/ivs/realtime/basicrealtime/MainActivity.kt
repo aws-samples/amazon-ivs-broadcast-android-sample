@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.ivs.broadcast.Bluetooth
 import com.amazonaws.ivs.broadcast.Stage.ConnectionState
 import kotlinx.coroutines.launch
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Bluetooth.startBluetoothSco(applicationContext)
         checkboxPublish = findViewById(R.id.main_publish_checkbox)
         recyclerView = findViewById(R.id.main_recycler_view)
         buttonJoin = findViewById(R.id.main_join)
@@ -72,6 +74,11 @@ class MainActivity : AppCompatActivity() {
         if (viewModel.canPublish) {
             requestPermission()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy();
+        Bluetooth.stopBluetoothSco(applicationContext);
     }
 
     //region Permissions Related Code
