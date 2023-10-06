@@ -35,6 +35,10 @@ android {
 
 dependencies {
     implementation 'com.amazonaws:ivs-broadcast:1.12.1:stages@aar'
+
+    // The IVS SDK works without OkHttp, but customers typically use OkHttp so let's follow that
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation 'androidx.appcompat:appcompat:1.6.1'
