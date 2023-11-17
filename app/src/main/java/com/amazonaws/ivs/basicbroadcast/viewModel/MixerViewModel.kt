@@ -127,7 +127,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             // Second, create a custom image input source for the logo.
             val logoSurfaceSource = this.createImageInputSource()
             val logoSurface = logoSurfaceSource.inputSurface
-            val canvas = logoSurface.lockCanvas(null)
+            val canvas = logoSurface!!.lockCanvas(null)
             canvas.drawBitmap(logo, 0f, 0f, null)
             logoSurface.unlockCanvasAndPost(canvas)
             // Bind it to the logo slot.
@@ -147,7 +147,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             player = MediaPlayer().apply {
                 this.setDataSource(context, content)
                 this.prepare()
-                this.setDisplay(CustomImageSourceSurfaceHolder(contentSurface))
+                this.setDisplay(CustomImageSourceSurfaceHolder(contentSurface!!))
                 this.setOnPreparedListener {
                     this.start()
                     this.isLooping = true
