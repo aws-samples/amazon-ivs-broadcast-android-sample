@@ -19,6 +19,7 @@ import com.amazonaws.ivs.broadcast.ImagePreviewView
 private const val TAG = "AmazonIVS"
 
 class MixerActivity : PermissionActivity() {
+
     private val viewModel: MixerViewModel by lazyViewModel({ application as App }, { MixerViewModel(application) })
 
     private var permissionsAsked = false
@@ -49,44 +50,12 @@ class MixerActivity : PermissionActivity() {
             viewModel.swapSlots()
         }
 
-        val logo = loadLogo()
-        val content = loadContentUri()
-
-        if (!arePermissionsGranted()) {
-            askForPermissions { success ->
-                if (success) viewModel.createSession(logo, content)
-                permissionsAsked = success
-            }
-        } else {
-            viewModel.createSession(logo, content)
-        }
-
         initBackCallback()
     }
-
-    private fun backPressed() {
-        endSession()
-        finish()
-    }
-
-    private fun initBackCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
-                backPressed()
-            }
-        } else {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    backPressed()
-                }
-            })
-        }
-    }
-
     override fun onResume() {
         Log.d(TAG, "On Resume")
         super.onResume()
-        if (permissionsAsked) permissionsAsked = false
+        if (!permissionsAsked) initSession()
     }
 
     override fun onDestroy() {
@@ -97,8 +66,21 @@ class MixerActivity : PermissionActivity() {
 
     override fun onStop() {
         Log.d(TAG, "On Stop")
+        if (permissionsAsked) permissionsAsked = false
         endSession()
         super.onStop()
+    }
+
+    private fun initSession() {
+        if (!arePermissionsGranted()) {
+            if (!permissionsAsked)
+                askForPermissions { success ->
+                    if (success) viewModel.createSession(loadLogo(), loadContentUri())
+                    permissionsAsked = true
+                }
+        } else {
+            viewModel.createSession(loadLogo(), loadContentUri())
+        }
     }
 
     private fun endSession() {
@@ -120,5 +102,23 @@ class MixerActivity : PermissionActivity() {
             .authority(applicationContext.packageName)
             .path(R.raw.ivs.toString())
             .build()
+    }
+    private fun backPressed() {
+        endSession()
+        finish()
+    }
+
+    private fun initBackCallback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                backPressed()
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    backPressed()
+                }
+            })
+        }
     }
 }
