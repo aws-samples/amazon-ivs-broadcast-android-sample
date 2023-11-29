@@ -4,8 +4,11 @@ import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.R
 import com.amazonaws.ivs.basicbroadcast.common.*
@@ -31,16 +34,16 @@ class MixerActivity : PermissionActivity() {
         binding = ActivityMixerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.preview.observe(this, {
+        viewModel.preview.observe(this) {
             Log.d(TAG, "Texture view changed: $it")
             binding.previewView.addView(it)
             imagePreviewView = it
-        })
+        }
 
-        viewModel.clearPreview.observe(this, { clear ->
+        viewModel.clearPreview.observe(this) { clear ->
             Log.d(TAG, "Texture view cleared")
             if (clear) binding.previewView.removeAllViews()
-        })
+        }
 
         binding.previewView.setOnClickListener {
             viewModel.swapSlots()
@@ -51,19 +54,33 @@ class MixerActivity : PermissionActivity() {
 
         if (!arePermissionsGranted()) {
             askForPermissions { success ->
-                if (success) {
-                    viewModel.createSession(logo, content)
-                }
+                if (success) viewModel.createSession(logo, content)
                 permissionsAsked = success
             }
         } else {
             viewModel.createSession(logo, content)
         }
+
+        initBackCallback()
     }
 
-    override fun onBackPressed() {
+    private fun backPressed() {
         endSession()
-        super.onBackPressed()
+        finish()
+    }
+
+    private fun initBackCallback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                backPressed()
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    backPressed()
+                }
+            })
+        }
     }
 
     override fun onResume() {

@@ -2,7 +2,6 @@ package com.amazonaws.ivs.basicbroadcast.viewModel
 
 import android.app.Application
 import android.util.Log
-import android.util.Size
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -100,9 +99,9 @@ class CustomSourceViewModel(private val context: Application) : ViewModel() {
                 return@with it
             }
 
-            this.mixer.slots = arrayOf(slot)
+            mixer.slots = arrayOf(slot)
 
-            this.video.size = BroadcastConfiguration.Vec2(720f, 1280f)
+            video.size = BroadcastConfiguration.Vec2(720f, 1280f)
         }
 
         BroadcastSession(context, broadcastListener, config, null).apply {
@@ -129,17 +128,21 @@ class CustomSourceViewModel(private val context: Application) : ViewModel() {
      */
     fun displayPreview() {
         Log.d(TAG, "Displaying composite preview")
-        session?.let {
-            it.awaitDeviceChanges {
-                it.previewView.run {
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                    )
-                    clearPreview.value = true
-                    preview.value = this
+        try {
+            session?.run {
+                awaitDeviceChanges {
+                    previewView.run {
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                        )
+                        clearPreview.value = true
+                        preview.value = this
+                    }
                 }
             }
+        } catch (e: BroadcastException) {
+            Log.e(TAG, "Unable to get preview: $e")
         }
     }
 }

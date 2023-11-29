@@ -101,8 +101,8 @@ class CameraManager(private val context: Context) {
             val manager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             try {
                 manager.openCamera(deviceId, cameraStateCallback, handler)
-            } catch (e: CameraAccessException) {
-                Log.d(TAG, "Failed to open camera")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to open camera: $e")
             }
         }
     }

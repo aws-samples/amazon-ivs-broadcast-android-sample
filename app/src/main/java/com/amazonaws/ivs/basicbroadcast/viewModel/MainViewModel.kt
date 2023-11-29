@@ -131,7 +131,7 @@ class MainViewModel(private val context: Application) : ViewModel() {
                                 microphoneDevice = microphone.descriptor
                             }
                         } catch (e: BroadcastException) {
-                            Log.d(TAG, "Camera exchange exception $e")
+                            Log.e(TAG, "Camera exchange exception $e")
                         }
                     }
                 } else if (error.error == ErrorType.ERROR_DEVICE_DISCONNECTED && microphoneDevice == null) {
@@ -166,10 +166,7 @@ class MainViewModel(private val context: Application) : ViewModel() {
                                 // By default, audio devices start with a gain of 1, so we only
                                 // need to change the gain on starting the session if we already know
                                 // the device should be muted.
-                                if (isMuted) {
-                                    it as AudioDevice
-                                    it.setGain(0f)
-                                }
+                                if (isMuted) (it as AudioDevice).setGain(0f)
                             }
                         }
                     }
@@ -212,15 +209,17 @@ class MainViewModel(private val context: Application) : ViewModel() {
      * Camera output display
      */
     private fun displayCameraOutput(device: Device) {
-        device as ImageDevice
-        Log.d(TAG, "Displaying camera output")
-        device.previewView?.run {
-            layoutParams = LinearLayout.LayoutParams(
+        try {
+            (device as ImageDevice).previewView?.run {
+                layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            clearPreview.value = true
-            preview.value = this
+                )
+                clearPreview.value = true
+                preview.value = this
+            }
+        } catch (ex: BroadcastException) {
+            Log.e(TAG, "Unable to display image preview")
         }
     }
 
@@ -240,15 +239,13 @@ class MainViewModel(private val context: Application) : ViewModel() {
                             cameraDevice = camera.descriptor
                         }
                     } catch (e: BroadcastException) {
-                        Log.d(TAG, "Camera exchange exception $e")
+                        Log.e(TAG, "Camera exchange exception $e")
                         attachCameraDevice(device)
                     }
                 }
             }
 
-            if (cameraDevice == null) {
-                attachCameraDevice(device)
-            }
+            if (cameraDevice == null) attachCameraDevice(device)
 
             if (session == null) cameraDevice = device
         }
@@ -268,21 +265,16 @@ class MainViewModel(private val context: Application) : ViewModel() {
                         session?.exchangeDevices(it, device) { microphone ->
                             Log.d(TAG, "Device attached ${microphone.descriptor.deviceId}")
                             microphoneDevice = microphone.descriptor
-                            if (isMuted) {
-                                microphone as AudioDevice
-                                microphone.setGain(0f)
-                            }
+                            if (isMuted) (microphone as AudioDevice).setGain(0f)
                         }
                     } catch (e: BroadcastException) {
-                        Log.d(TAG, "Microphone exchange exception $e")
+                        Log.e(TAG, "Microphone exchange exception $e")
                         attachMicrophoneDevice(device)
                     }
                 }
             }
 
-            if (microphoneDevice == null) {
-                attachMicrophoneDevice(device)
-            }
+            if (microphoneDevice == null) attachMicrophoneDevice(device)
 
             if (session == null) microphoneDevice = device
         }
@@ -309,7 +301,6 @@ class MainViewModel(private val context: Application) : ViewModel() {
                 // set the gain to 0 on any newly-added audio devices in the future.
                 val devices = it.listAttachedDevices()
 
-
                 devices.forEach { device ->
                     if (muteAll) {
                         // For each attached device, check if it's an audio source. Here we are checking
@@ -317,15 +308,13 @@ class MainViewModel(private val context: Application) : ViewModel() {
                         // USER_AUDIO, or SYSTEM_AUDIO.
                         if (device.descriptor.hasStream(Device.Descriptor.StreamType.PCM)) {
                             // Set each AudioDevice's gain.
-                            device as AudioDevice
-                            device.setGain(gain)
+                            (device as AudioDevice).setGain(gain)
                         }
                     } else {
                         // We only want to mute a single device. Check if this device's descriptor
                         // matches the one we would like to mute.
                         if (device.descriptor == microphoneDevice) {
-                            device as AudioDevice
-                            device.setGain(gain)
+                            (device as AudioDevice).setGain(gain)
                         }
                     }
                 }
@@ -348,10 +337,14 @@ class MainViewModel(private val context: Application) : ViewModel() {
         session?.isReady?.let { ready ->
             if (ready) {
                 if (!screenCaptureEnabled) {
-                    session?.attachDevice(device) {
-                        session?.mixer?.bind(it, SLOT_CAMERA_NAME)
-                        cameraDevice = it.descriptor
-                        displayCameraOutput(it)
+                    try {
+                        session?.attachDevice(device) {
+                            session?.mixer?.bind(it, SLOT_CAMERA_NAME)
+                            cameraDevice = it.descriptor
+                            displayCameraOutput(it)
+                        }
+                    } catch (e: BroadcastException) {
+                        Log.e(TAG, "Camera attach exception: $e")
                     }
                 }
             } else {
@@ -369,13 +362,14 @@ class MainViewModel(private val context: Application) : ViewModel() {
         session?.isReady?.let { ready ->
             if (ready) {
                 if (!screenCaptureEnabled) {
-                    session?.attachDevice(device) {
-                        session?.mixer?.bind(it, SLOT_CAMERA_NAME)
-                        microphoneDevice = it.descriptor
-                        if (isMuted) {
-                            it as AudioDevice
-                            it.setGain(0f)
+                    try {
+                        session?.attachDevice(device) {
+                            session?.mixer?.bind(it, SLOT_CAMERA_NAME)
+                            microphoneDevice = it.descriptor
+                            if (isMuted) (it as AudioDevice).setGain(0f)
                         }
+                    } catch (e: BroadcastException) {
+                        Log.e(TAG, "Microphone attach exception: $e")
                     }
                 }
             } else {
@@ -393,12 +387,16 @@ class MainViewModel(private val context: Application) : ViewModel() {
         Intent(context, NotificationActivity::class.java)
     )?.build()
 
-    suspend fun startScreenCapture(data: Intent?, notification: Notification?) = suspendCoroutine<Unit> {
+    suspend fun startScreenCapture(data: Intent?, notification: Notification?) = suspendCoroutine {
         Log.d(TAG, "Starting screen capture: $data, $notification")
-        session?.createSystemCaptureSources(data, BroadcastSystemCaptureService::class.java, notification) { devices: List<Device> ->
-            Log.d(TAG, "Screen capture started")
-            devices.forEach { session?.mixer?.bind(it, SLOT_GAMING_NAME) }
-            it.resume(Unit)
+        try {
+            session?.createSystemCaptureSources(data, BroadcastSystemCaptureService::class.java, notification) { devices: List<Device> ->
+                Log.d(TAG, "Screen capture started")
+                devices.forEach { session?.mixer?.bind(it, SLOT_GAMING_NAME) }
+                it.resume(Unit)
+            }
+        } catch (e: BroadcastException) {
+            Log.e(TAG, "System capture exception: $e")
         }
     }
 

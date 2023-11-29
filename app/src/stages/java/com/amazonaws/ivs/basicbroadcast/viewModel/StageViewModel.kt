@@ -347,10 +347,14 @@ class StageViewModel(private val context: Application) : ViewModel() {
         deviceDiscovery.listLocalDevices().find { device -> device.descriptor.type == Device.Descriptor.DeviceType.MICROPHONE }?.let { device ->
             microphoneStream = AudioLocalStageStream(device).apply {
                 setStatsCallback(AudioStatsCallback(CAMERA_SLOT_NAME, device.descriptor.deviceId))
-                broadcastSession?.attachDevice(device.descriptor) {
-                    Log.d(TAG, "Microphone device ${it.descriptor.deviceId} attached")
-                    // Call `refreshStrategy` to refresh local audio stream state
-                    stage?.refreshStrategy()
+                try {
+                    broadcastSession?.attachDevice(device.descriptor) {
+                        Log.d(TAG, "Microphone device ${it.descriptor.deviceId} attached")
+                        // Call `refreshStrategy` to refresh local audio stream state
+                        stage?.refreshStrategy()
+                    }
+                }  catch (e: BroadcastException) {
+                    Log.e(TAG, "Microphone attach exception: $e")
                 }
             }
         }
@@ -388,9 +392,14 @@ class StageViewModel(private val context: Application) : ViewModel() {
 
     private fun associateVideoToParticipant(participantId: String, remoteStream: StageStream) {
         if (remoteStream.streamType == StageStream.Type.VIDEO) {
-            participantMap[participantId]?.videoMuted = remoteStream.muted
-            remoteVideoStreamMap[participantId] = remoteStream as ImageStageStream
-            addParticipantWithPreview(participantId, remoteStream.preview)
+            try {
+                val preview = remoteStream.preview
+                participantMap[participantId]?.videoMuted = remoteStream.muted
+                remoteVideoStreamMap[participantId] = remoteStream as ImageStageStream
+                addParticipantWithPreview(participantId, remoteStream.preview)
+            } catch (e: BroadcastException) {
+                Log.d(TAG, "Unable to get preview: $e")
+            }
         }
     }
 
@@ -517,9 +526,13 @@ class StageViewModel(private val context: Application) : ViewModel() {
                             if (broadcastSession?.listAttachedDevices()
                                     ?.find { it.descriptor.deviceId == device.descriptor.deviceId && it.descriptor.type == device.descriptor.type } == null
                             ) {
-                                // Need to add
-                                broadcastSession?.attachDevice(device)
-                                broadcastSession?.mixer?.bind(device, entry.key)
+                                try {
+                                    // Need to add
+                                    broadcastSession?.attachDevice(device)
+                                    broadcastSession?.mixer?.bind(device, entry.key)
+                                } catch (e: BroadcastException) {
+                                    Log.e(TAG, "Device attach exception: $e")
+                                }
                             }
                         }
                     }

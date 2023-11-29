@@ -17,30 +17,29 @@ private const val TAG = "AmazonIVS"
 
 class MixerViewModel(private val context: Application) : ViewModel() {
 
-    var session: BroadcastSession? = null
-    var player: MediaPlayer? = null
+    private var session: BroadcastSession? = null
+    private var player: MediaPlayer? = null
 
-    val CAMERA_SLOT_NAME: String = "camera"
-    val CONTENT_SLOT_NAME: String = "content"
-    val LOGO_SLOT_NAME: String = "logo"
+    private var cameraIsSmall: Boolean = true
 
-    var cameraIsSmall: Boolean = true
-
-    var cameraSlot: BroadcastConfiguration.Mixer.Slot? = null
-    var contentSlot: BroadcastConfiguration.Mixer.Slot? = null
-    var logoSlot: BroadcastConfiguration.Mixer.Slot? = null
+    private var cameraSlot: BroadcastConfiguration.Mixer.Slot? = null
+    private var contentSlot: BroadcastConfiguration.Mixer.Slot? = null
+    private var logoSlot: BroadcastConfiguration.Mixer.Slot? = null
 
     val preview = MutableLiveData<ImagePreviewView>()
     val clearPreview = MutableLiveData<Boolean>()
 
     private companion object MixerGuide {
-        val borderWidth: Float = 10f
+        const val CAMERA_SLOT_NAME: String = "camera"
+        const val CONTENT_SLOT_NAME: String = "content"
+        const val LOGO_SLOT_NAME: String = "logo"
+        const val BORDER_WIDTH: Float = 10f
         val bigSize: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(1280f, 720f)
         val smallSize: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(320f, 180f)
         val bigPosition: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(0f, 0f)
-        val smallPositionBottomLeft: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(borderWidth, bigSize.y - smallSize.y - borderWidth)
-        val smallPositionTopRight: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(bigSize.x - smallSize.x - borderWidth, borderWidth)
-        val smallPositionBottomRight: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(bigSize.x - smallSize.x - borderWidth, bigSize.y - smallSize.y - borderWidth)
+        val smallPositionBottomLeft: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(BORDER_WIDTH, bigSize.y - smallSize.y - BORDER_WIDTH)
+        val smallPositionTopRight: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(bigSize.x - smallSize.x - BORDER_WIDTH, BORDER_WIDTH)
+        val smallPositionBottomRight: BroadcastConfiguration.Vec2 = BroadcastConfiguration.Vec2(bigSize.x - smallSize.x - BORDER_WIDTH, bigSize.y - smallSize.y - BORDER_WIDTH)
     }
 
     /**
@@ -51,9 +50,9 @@ class MixerViewModel(private val context: Application) : ViewModel() {
 
         // Create a custom configuration at 720p60.
         val config = BroadcastConfiguration().apply {
-            this.video.size = bigSize
-            this.video.targetFramerate = 60
-            this.video.enableTransparency(true)
+            video.size = bigSize
+            video.targetFramerate = 60
+            video.enableTransparency(true)
 
             // This slot will hold the camera and start in the bottom left corner of the stream. It will move during the transition.
             cameraSlot = BroadcastConfiguration.Mixer.Slot.with {
@@ -80,7 +79,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             // This slot will be a logo-based watermark and sit in the bottom right corner of the stream. It will not move around.
             logoSlot  = BroadcastConfiguration.Mixer.Slot.with {
                 it.size = BroadcastConfiguration.Vec2(smallSize.y, smallSize.y) // 1:1 aspect
-                it.position = BroadcastConfiguration.Vec2(bigSize.x - smallSize.y - borderWidth, smallPositionBottomRight.y)
+                it.position = BroadcastConfiguration.Vec2(bigSize.x - smallSize.y - BORDER_WIDTH, smallPositionBottomRight.y)
                 it.setzIndex(3)
                 it.transparency = 0.3f
                 it.name = LOGO_SLOT_NAME
@@ -88,7 +87,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
                 return@with it
             }
 
-            this.mixer.slots = arrayOf(cameraSlot, contentSlot, logoSlot)
+            mixer.slots = arrayOf(cameraSlot, contentSlot, logoSlot)
         }
 
         BroadcastSession(context, null, config, null).apply {
@@ -101,26 +100,26 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             }
 
             // Attach devices to each slot manually based on the slot names.
-
             // Find the first front camera.
-            val frontCamera = BroadcastSession.listAvailableDevices(context).filter {
+            val devices = BroadcastSession.listAvailableDevices(context).filter {
                 it.position == Device.Descriptor.Position.FRONT && it.type == Device.Descriptor.DeviceType.CAMERA
-            }[0]
-            frontCamera?.let {
-                // Then, we attach the front camera and on completion, bind it to the camera slot.
-                // Note that bindToPreference is FALSE, which gives us full control over binding the device to the slot. This also means
-                // that we are responsible for binding the device to a slot once the device is attached.
-                // (When bindToPreference is TRUE, as part of attaching the device, the broadcast session will also try to bind the device to a
-                // slot with a matching type preference.)
-                this.attachDevice(frontCamera, false) {
-                    val success: Boolean = this.mixer?.bind(it, CAMERA_SLOT_NAME) == true
+            }
+            if (devices.isNotEmpty()) {
+                try {
+                    // Then, we attach the front camera and on completion, bind it to the camera slot.
+                    // Note that bindToPreference is FALSE, which gives us full control over binding the device to the slot. This also means
+                    // that we are responsible for binding the device to a slot once the device is attached.
+                    // (When bindToPreference is TRUE, as part of attaching the device, the broadcast session will also try to bind the device to a
+                    // slot with a matching type preference.)
+                    attachDevice(devices.first(), false) {
+                        val success: Boolean = this.mixer?.bind(it, CAMERA_SLOT_NAME) == true
 
-                    // Error-checking. The most common source of this error is that there is no slot
-                    // with the name provided.
-                    if (!success) {
-                        Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
+                        // Error-checking. The most common source of this error is that there is no slot
+                        // with the name provided.
+                        if (!success) Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
                     }
-
+                } catch (e: Exception) {
+                    Log.e(TAG, "Camera exception: $e")
                 }
             }
 
@@ -131,37 +130,33 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             canvas.drawBitmap(logo, 0f, 0f, null)
             logoSurface.unlockCanvasAndPost(canvas)
             // Bind it to the logo slot.
-            this.awaitDeviceChanges {
+            awaitDeviceChanges {
                 val success: Boolean = this.mixer?.bind(logoSurfaceSource, LOGO_SLOT_NAME) == true
 
                 // Error-checking. The most common source of this error is that there is no slot
                 // with the name provided.
-                if (!success) {
-                    Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
-                }
+                if (!success) Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
             }
 
             // Third, create a custom image input source for the mp4 content.
             val contentSurfaceSource = this.createImageInputSource()
             val contentSurface = contentSurfaceSource.inputSurface
             player = MediaPlayer().apply {
-                this.setDataSource(context, content)
-                this.prepare()
-                this.setDisplay(CustomImageSourceSurfaceHolder(contentSurface!!))
-                this.setOnPreparedListener {
-                    this.start()
-                    this.isLooping = true
+                setDataSource(context, content)
+                prepare()
+                setDisplay(CustomImageSourceSurfaceHolder(contentSurface!!))
+                setOnPreparedListener {
+                    start()
+                    isLooping = true
                 }
             }
             // Bind it to the content slot.
-            this.awaitDeviceChanges {
+            awaitDeviceChanges {
                 val success: Boolean = this.mixer?.bind(contentSurfaceSource, CONTENT_SLOT_NAME) == true
 
                 // Error-checking. The most common source of this error is that there is no slot
                 // with the name provided.
-                if (!success) {
-                    Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
-                }
+                if (!success) Toast.makeText(context, context.getString(R.string.error_failed_to_bind_to_slot), Toast.LENGTH_SHORT).show()
             }
 
             // This creates a preview of the composited output stream, not an individual source. Because of this there is small
@@ -169,7 +164,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             // It is also important to note that because our configuration is for a landscape stream using the "fit" aspect mode
             // there will be aggressive letterboxing when holding a mobile phone in portrait. Rotating to landscape or using an tablet
             // will provide a larger preview, though the only change is the scaling.
-            this.awaitDeviceChanges {
+            awaitDeviceChanges {
                 displayPreview()
             }
         }
@@ -188,7 +183,7 @@ class MixerViewModel(private val context: Application) : ViewModel() {
     fun swapSlots() {
         Log.d(TAG, "Swapping the camera and content slots")
 
-        session?.let {
+        session?.run {
             // Update slot configurations to their new state.
             cameraIsSmall.apply {
                 cameraSlot?.let { slot ->
@@ -207,8 +202,8 @@ class MixerViewModel(private val context: Application) : ViewModel() {
             // Transition the slots to their new states over a 0.5 duration.
             // Two common sources of failure is when the slot does not exist,
             // or the new configuration slot name does not match the slot name provided to the method.
-            it.mixer?.transition(CAMERA_SLOT_NAME, cameraSlot!!, 0.5, null)
-            it.mixer?.transition(CONTENT_SLOT_NAME, contentSlot!!, 0.5, null)
+            mixer?.transition(CAMERA_SLOT_NAME, cameraSlot!!, 0.5, null)
+            mixer?.transition(CONTENT_SLOT_NAME, contentSlot!!, 0.5, null)
         }
     }
 
@@ -217,13 +212,17 @@ class MixerViewModel(private val context: Application) : ViewModel() {
      */
     private fun displayPreview() {
         Log.d(TAG, "Displaying composite preview")
-        session?.previewView?.run {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            clearPreview.value = true
-            preview.value = this
+        try {
+            session?.previewView?.run {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                clearPreview.value = true
+                preview.value = this
+            }
+        } catch (e: BroadcastException) {
+            Log.e(TAG, "Preview display exception $e")
         }
     }
 }
