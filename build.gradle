@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = "1.7.10"
-    ext.broadcast_version = findProperty("broadcastVersion") ?: '1.13.1'
+    ext.broadcast_version = findProperty("broadcastVersion") ?: '1.13.2'
 
     repositories {
         google()
