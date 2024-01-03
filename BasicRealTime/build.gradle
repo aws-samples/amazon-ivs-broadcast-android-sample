@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.amazonaws:ivs-broadcast:1.13.2:stages@aar'
+    implementation 'com.amazonaws:ivs-broadcast:1.13.4:stages@aar'
 
     // The Amazon IVS SDK works without OkHttp, but because many applications include it,
     // so we are including it in this demo app to mimic real world behavior
