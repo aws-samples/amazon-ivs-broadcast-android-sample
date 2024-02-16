@@ -258,7 +258,6 @@ class CameraManager(private val context: Context) {
     private val orientationListener: OrientationEventListener =
     object : OrientationEventListener(context) {
         override fun onOrientationChanged(orientation: Int) {
-            var orientation = orientation
             if (orientation == ORIENTATION_UNKNOWN) {
                 // We do not know what the current device orientation is, just exit and let the picture be in
                 // its prior orientation.
@@ -278,10 +277,9 @@ class CameraManager(private val context: Context) {
             }
             val display =
                 (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-            orientation = display.rotation
 
             // Rotation needs to be reversed for the front camera
-            rads = -(orientation * (Math.PI / 2.0) % (Math.PI * 2.0))
+            rads = -(display.rotation * (Math.PI / 2.0) % (Math.PI * 2.0))
             if (rads == lastNotifiedOrientation) {
                 return
             }

@@ -396,7 +396,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
                 val preview = remoteStream.preview
                 participantMap[participantId]?.videoMuted = remoteStream.muted
                 remoteVideoStreamMap[participantId] = remoteStream as ImageStageStream
-                addParticipantWithPreview(participantId, remoteStream.preview)
+                addParticipantWithPreview(participantId, preview)
             } catch (e: BroadcastException) {
                 Log.d(TAG, "Unable to get preview: $e")
             }
