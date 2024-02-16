@@ -10,6 +10,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        def customMavenUrl = System.getenv('CUSTOM_MAVEN_URL')
+        if (customMavenUrl) {
+            println(">>> Using custom maven URL ${customMavenUrl}")
+            maven {
+                url customMavenUrl
+            }
+        }
     }
 }
 rootProject.name = "RealTime"
