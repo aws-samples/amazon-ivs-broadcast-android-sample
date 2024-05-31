@@ -4,12 +4,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.view.contains
 import androidx.core.view.isNotEmpty
-import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.viewModel.StageViewModel
 import com.amazonaws.ivs.broadcast.BroadcastException
 import com.amazonaws.ivs.broadcast.BroadcastSession
@@ -22,7 +20,7 @@ class StageActivity : PermissionActivity() {
 
     private lateinit var binding: ActivityStageBinding
 
-    private val viewModel: StageViewModel by lazyViewModel({ application as App }, { StageViewModel(application) })
+    private val viewModel: StageViewModel by lazyViewModel({ this }, { StageViewModel(application) })
 
     companion object {
         const val TOKEN_EXTRA_NAME = "TOKEN"
@@ -76,25 +74,15 @@ class StageActivity : PermissionActivity() {
     }
 
     private fun backPressed() {
-        Intent(Intent.ACTION_MAIN).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            addCategory(Intent.CATEGORY_HOME)
-            startActivity(this)
-        }
+        finish()
     }
 
     private fun initBackCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
                 backPressed()
             }
-        } else {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    backPressed()
-                }
-            })
-        }
+        })
     }
 
     private fun getTokenData(intent: Intent?) {

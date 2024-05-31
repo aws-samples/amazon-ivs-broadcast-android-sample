@@ -89,17 +89,11 @@ class CustomSourceActivity : PermissionActivity() {
     }
 
     private fun initBackCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
                 backPressed()
             }
-        } else {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    backPressed()
-                }
-            })
-        }
+        })
     }
 
     override fun onResume() {
@@ -176,7 +170,7 @@ class CustomSourceActivity : PermissionActivity() {
         binding.broadcastOptionView.root.hide()
         binding.optionView.root.show()
     }
-    
+
     private fun createSessionAndAttachCustomSources(endpoint: String, key: String) {
         createSession {
             startSession(endpoint, key)

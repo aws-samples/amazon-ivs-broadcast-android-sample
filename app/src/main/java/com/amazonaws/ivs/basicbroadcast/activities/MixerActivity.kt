@@ -20,7 +20,7 @@ private const val TAG = "AmazonIVS"
 
 class MixerActivity : PermissionActivity() {
 
-    private val viewModel: MixerViewModel by lazyViewModel({ application as App }, { MixerViewModel(application) })
+    private val viewModel: MixerViewModel by lazyViewModel({ this }, { MixerViewModel(application) })
 
     private var permissionsAsked = false
 
@@ -109,16 +109,10 @@ class MixerActivity : PermissionActivity() {
     }
 
     private fun initBackCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
                 backPressed()
             }
-        } else {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    backPressed()
-                }
-            })
-        }
+        })
     }
 }

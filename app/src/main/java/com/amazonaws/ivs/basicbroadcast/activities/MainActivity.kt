@@ -38,7 +38,7 @@ class MainActivity : PermissionActivity() {
     @Inject
     lateinit var cacheProvider: LocalCacheProvider
 
-    private val viewModel: MainViewModel by lazyViewModel({ application as App }, { MainViewModel(application) })
+    private val viewModel: MainViewModel by lazyViewModel({ this }, { MainViewModel(application) })
 
     private var optionsVisible = true
     private var permissionsAsked = false
@@ -158,17 +158,11 @@ class MainActivity : PermissionActivity() {
     }
 
     private fun initBackCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
                 backPressed()
             }
-        } else {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    backPressed()
-                }
-            })
-        }
+        })
     }
 
     private fun onReqScreenCapture(data: Intent?) {
