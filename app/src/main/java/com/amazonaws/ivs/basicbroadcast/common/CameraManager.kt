@@ -177,8 +177,8 @@ class CameraManager(private val context: Context) {
                 this.addTarget(surface!!.inputSurface!!)
             }
 
+            @Suppress("DEPRECATION")
             it.createCaptureSession(listOf(surface!!.inputSurface!!), sessionStateCallback, null)
-
         }
     }
 

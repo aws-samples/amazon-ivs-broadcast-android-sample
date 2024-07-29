@@ -656,6 +656,7 @@ class StageViewModel(private val context: Application) : ViewModel() {
             }
         } catch (e: BroadcastException) {
             Log.e(TAG, "Exception while joining stage $e")
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
         }
     }
 

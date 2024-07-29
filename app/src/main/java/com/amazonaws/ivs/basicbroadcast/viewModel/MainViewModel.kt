@@ -400,4 +400,9 @@ class MainViewModel(private val context: Application) : ViewModel() {
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        session?.release()
+        session = null
+    }
 }

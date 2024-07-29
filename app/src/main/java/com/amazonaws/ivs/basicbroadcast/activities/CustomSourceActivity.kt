@@ -32,7 +32,7 @@ class CustomSourceActivity : PermissionActivity() {
     lateinit var cacheProvider: LocalCacheProvider
 
     private val viewModel: CustomSourceViewModel by lazyViewModel(
-        { application as App },
+        { this },
         { CustomSourceViewModel(application) })
 
     private var cameraManager: CameraManager? = null

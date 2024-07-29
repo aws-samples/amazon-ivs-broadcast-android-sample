@@ -24,5 +24,5 @@ class App : Application(), ViewModelStoreOwner {
             private set
     }
 
-    override fun getViewModelStore(): ViewModelStore = appViewModelStore
+    override val viewModelStore: ViewModelStore = appViewModelStore
 }

@@ -1,49 +1,42 @@
-def appCompatVersion = '1.5.1'
-def coreVersion = '1.9.0'
-def constraintLayoutVersion = '2.1.4'
-def materialDesignVersion = '1.6.1'
-def recyclerViewVersion = '1.2.1'
-def roomVersion = '2.4.3'
-def lifecycleVersion = '2.5.1'
-def daggerVersion = '2.43.2'
-def jsonVersion = '1.4.0'
-def camera2_version = "1.1.0"
-def coroutines_version = '1.6.4'
-
 dependencies {
 
     // Library
     coreImplementation "com.amazonaws:ivs-broadcast:$broadcast_version"
     stagesImplementation "com.amazonaws:ivs-broadcast:$broadcast_version:stages@aar"
 
+    // The Amazon IVS SDK works without OkHttp, but because many applications include it,
+    // so we are including it in this demo app to mimic real world behavior
+    implementation libs.okhttp
+
     // Material design
-    implementation "com.google.android.material:material:$materialDesignVersion"
+    implementation libs.google.material
 
     // Kotlin
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation libs.coroutines.core
+    implementation libs.coroutines.android
 
     // Android
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation "androidx.core:core-ktx:$coreVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-    implementation "androidx.camera:camera-camera2:$camera2_version"
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.lifecycle.extensions
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.camera2
 
     // Json
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$jsonVersion"
+    implementation libs.serialization.core
+    implementation libs.serialization.json
 
     // Room components
-    implementation "androidx.room:room-runtime:$roomVersion"
-    implementation "androidx.room:room-ktx:$roomVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation libs.room.runtime
+    implementation libs.room.ktx
+    kapt libs.room.compiler
 
     // Dagger
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt libs.dagger.compiler
+    kapt libs.dagger.processor
+    implementation libs.dagger.android
 
 }
