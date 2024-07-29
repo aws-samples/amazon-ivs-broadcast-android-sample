@@ -1,16 +1,16 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin
 }
 
 android {
     namespace 'com.amazonaws.ivs.realtime.basicrealtime'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.amazonaws.ivs.realtime.basicrealtime"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -30,7 +30,6 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-    dataBinding.enabled true
 }
 
 dependencies {
@@ -38,16 +37,16 @@ dependencies {
 
     // The Amazon IVS SDK works without OkHttp, but because many applications include it,
     // so we are including it in this demo app to mimic real world behavior
-    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation libs.okhttp
 
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.activity.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.lifecycle.extensions
+    implementation libs.androidx.constraintlayout
 
-    def lifecycle_version = "2.6.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation libs.google.material
+
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
 }
