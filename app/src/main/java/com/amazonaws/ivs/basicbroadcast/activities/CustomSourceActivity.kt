@@ -5,11 +5,15 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.R
 import com.amazonaws.ivs.basicbroadcast.common.*
@@ -163,6 +167,14 @@ class CustomSourceActivity : PermissionActivity() {
             val change = !optionsVisible
             binding.optionRoot.changeVisibility(change)
             optionsVisible = change
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.optionRoot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            windowInsets
         }
     }
 

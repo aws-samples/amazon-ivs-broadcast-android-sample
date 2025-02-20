@@ -2,7 +2,11 @@ package com.amazonaws.ivs.basicbroadcast.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.amazonaws.ivs.basicbroadcast.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
@@ -24,6 +28,14 @@ class MenuActivity : AppCompatActivity() {
 
         binding.menuCustomMediaSources.setOnClickListener {
             startActivity(Intent(this, CustomSourceActivity::class.java))
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.menuBroadcast) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            windowInsets
         }
     }
 }

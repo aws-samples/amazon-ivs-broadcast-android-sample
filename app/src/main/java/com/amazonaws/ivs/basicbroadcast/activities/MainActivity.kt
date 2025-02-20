@@ -10,12 +10,15 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.R
 import com.amazonaws.ivs.basicbroadcast.adapters.DeviceSpinnerAdapter
@@ -256,6 +259,18 @@ class MainActivity : PermissionActivity() {
             setOnClickListener {
                 viewModel.screenCaptureMode(isChecked)
             }
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.optionRoot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+
+            binding.deviceView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = insets.bottom
+            }
+            windowInsets
         }
     }
 
