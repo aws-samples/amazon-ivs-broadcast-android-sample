@@ -4,10 +4,8 @@ import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import com.amazonaws.ivs.basicbroadcast.App
 import com.amazonaws.ivs.basicbroadcast.R
@@ -47,7 +45,7 @@ class MixerActivity : PermissionActivity() {
         }
 
         binding.previewView.setOnClickListener {
-            viewModel.swapSlots()
+            viewModel.swapSources()
         }
 
         initBackCallback()
@@ -55,39 +53,39 @@ class MixerActivity : PermissionActivity() {
     override fun onResume() {
         Log.d(TAG, "On Resume")
         super.onResume()
-        if (!permissionsAsked) initSession()
+        if (!permissionsAsked) createResources()
     }
 
     override fun onDestroy() {
         Log.d(TAG, "On Destroy")
-        endSession()
+        destroyResources()
         super.onDestroy()
     }
 
     override fun onStop() {
         Log.d(TAG, "On Stop")
         if (permissionsAsked) permissionsAsked = false
-        endSession()
+        destroyResources()
         super.onStop()
     }
 
-    private fun initSession() {
+    private fun createResources() {
         if (!arePermissionsGranted()) {
             if (!permissionsAsked)
                 askForPermissions { success ->
-                    if (success) viewModel.createSession(loadLogo(), loadContentUri())
+                    if (success) viewModel.createMixedImageDevice(loadLogo(), loadContentUri())
                     permissionsAsked = true
                 }
         } else {
-            viewModel.createSession(loadLogo(), loadContentUri())
+            viewModel.createMixedImageDevice(loadLogo(), loadContentUri())
         }
     }
 
-    private fun endSession() {
-        Log.d(TAG, "Session ended")
+    private fun destroyResources() {
+        Log.d(TAG, "Destroying resources")
         binding.previewView.removeAllViews()
         imagePreviewView = null
-        viewModel.endSession()
+        viewModel.destroyResources()
     }
 
     private fun loadLogo(): Bitmap {
@@ -104,7 +102,7 @@ class MixerActivity : PermissionActivity() {
             .build()
     }
     private fun backPressed() {
-        endSession()
+        destroyResources()
         finish()
     }
 
