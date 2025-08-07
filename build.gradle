@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.default_broadcast_version = "1.32.2"
+    ext.default_broadcast_version = "1.33.0"
     ext.broadcast_version = findProperty("broadcastVersion") ?: default_broadcast_version
 
     repositories {
