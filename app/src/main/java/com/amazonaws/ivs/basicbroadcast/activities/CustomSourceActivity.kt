@@ -216,13 +216,7 @@ class CustomSourceActivity : PermissionActivity() {
     private fun attachCustomSources() {
         Log.d(TAG, "Attaching custom sources")
         attachCustomCamera()
-
-        // We're using a convenience method in AudioRecorder that was only introduced in Android 23.
-        // Using the custom audio source is compatible back to Android 21, however. Instructions
-        // on how to do so are provided in AudioRecorder.kt.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            attachCustomMicrophone()
-        }
+        attachCustomMicrophone()
     }
 
     private fun attachCustomCamera() {
@@ -234,7 +228,6 @@ class CustomSourceActivity : PermissionActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun attachCustomMicrophone() {
         // Most of the logic for appending audio data from the custom microphone to the
         // broadcast session is in the AudioRecorder class, created below.

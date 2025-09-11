@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.amazonaws.ivs.basicbroadcast"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdk 35
         versionCode 1
         versionName "1.0"
