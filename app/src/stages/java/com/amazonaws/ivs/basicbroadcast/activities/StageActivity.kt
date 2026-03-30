@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.contains
 import androidx.core.view.isNotEmpty
+import androidx.core.view.updatePadding
 import com.amazonaws.ivs.basicbroadcast.viewModel.StageViewModel
 import com.amazonaws.ivs.broadcast.BroadcastException
 import com.amazonaws.ivs.broadcast.BroadcastSession
@@ -32,6 +35,12 @@ class StageActivity : PermissionActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(left = insets.left, top = insets.top, right = insets.right, bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
 
         getTokenData(intent)
         observeData()
