@@ -1,17 +1,16 @@
 plugins {
     alias libs.plugins.android.application
-    alias libs.plugins.kotlin
-    alias libs.plugins.kapt
+    alias libs.plugins.ksp
 }
 
 android {
-    compileSdk 35
+    compileSdk 37
     namespace 'com.amazonaws.ivs.basicbroadcast'
 
     defaultConfig {
         applicationId "com.amazonaws.ivs.basicbroadcast"
         minSdkVersion 23
-        targetSdk 35
+        targetSdk 37
         versionCode 1
         versionName "1.0"
 
@@ -42,12 +41,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = '11'
-    }
-
     buildFeatures {
-        dataBinding = true
         viewBinding = true
     }
 }

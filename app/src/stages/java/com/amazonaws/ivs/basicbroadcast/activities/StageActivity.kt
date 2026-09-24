@@ -3,6 +3,7 @@ package com.amazonaws.ivs.basicbroadcast.activities
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
@@ -153,7 +154,7 @@ class StageActivity : PermissionActivity() {
         }
 
         viewModel.joinHappened.observe(this) { joinedSession ->
-            binding.joined = joinedSession
+            setJoinedState(joinedSession)
         }
 
         viewModel.removeAllParticipants.observe { remove ->
@@ -165,7 +166,7 @@ class StageActivity : PermissionActivity() {
         }
 
         viewModel.broadcastHappened.observe(this) { broadcasting ->
-            binding.stageBroadcastOptions.broadcasting = broadcasting
+            setBroadcastingState(broadcasting)
             if (!broadcasting) viewModel.stopBroadcast()
             binding.btnBroadcast.setBroadcastingTextColor(broadcasting)
         }
@@ -189,7 +190,7 @@ class StageActivity : PermissionActivity() {
             if (token.isNotEmpty()) stageOptionView.edtToken.setText(token)
 
             with(stageOptionView) {
-                version = BroadcastSession.getVersion()
+                tvVersion.text = "IVS SDK " + BroadcastSession.getVersion()
 
                 btnJoin.setOnClickListener {
                     with(viewModel) {
@@ -222,6 +223,27 @@ class StageActivity : PermissionActivity() {
                 if (viewModel.broadcasting) viewModel.stopBroadcast() else startBroadcast()
             }
         }
+        setJoinedState(viewModel.joined)
+        setBroadcastingState(viewModel.broadcasting)
+    }
+
+    private fun setJoinedState(joined: Boolean) {
+        with(binding) {
+            val buttonVisibility = if (joined) View.VISIBLE else View.INVISIBLE
+            btnAudio.visibility = buttonVisibility
+            btnCamera.visibility = buttonVisibility
+            btnLeave.visibility = buttonVisibility
+            optionRoot.visibility = if (joined) View.GONE else View.VISIBLE
+        }
+    }
+
+    private fun setBroadcastingState(broadcasting: Boolean) {
+        with(binding.stageBroadcastOptions) {
+            val fieldVisibility = if (broadcasting) View.GONE else View.VISIBLE
+            edtEndpoint.visibility = fieldVisibility
+            edtStream.visibility = fieldVisibility
+            btnStart.text = getString(if (broadcasting) R.string.txt_stop else R.string.txt_broadcast)
+        }
     }
 
     private fun clearPreview() {
@@ -248,10 +270,8 @@ class StageActivity : PermissionActivity() {
      */
     private fun leaveStage() {
         viewModel.leaveStage()
-        with(binding) {
-            joined = false
-            stageBroadcastOptions.root.hide()
-        }
+        setJoinedState(false)
+        binding.stageBroadcastOptions.root.hide()
     }
 
     /**

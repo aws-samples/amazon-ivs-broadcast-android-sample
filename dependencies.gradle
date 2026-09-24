@@ -23,7 +23,6 @@ dependencies {
     implementation libs.androidx.lifecycle.extensions
     implementation libs.androidx.lifecycle.livedata.ktx
     implementation libs.androidx.lifecycle.viewmodel.ktx
-    implementation libs.androidx.camera2
 
     // Json
     implementation libs.serialization.core
@@ -32,11 +31,11 @@ dependencies {
     // Room components
     implementation libs.room.runtime
     implementation libs.room.ktx
-    kapt libs.room.compiler
+    ksp libs.room.compiler
 
     // Dagger
-    kapt libs.dagger.compiler
-    kapt libs.dagger.processor
+    ksp libs.dagger.compiler
+    ksp libs.dagger.processor
     implementation libs.dagger.android
 
 }
